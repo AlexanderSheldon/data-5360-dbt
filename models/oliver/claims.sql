@@ -1,4 +1,5 @@
 {{ config(
+    alias = 'fact_claims',
     materialized = 'table',
     schema = 'dw_oliver'
 )
