@@ -6,7 +6,7 @@
 SELECT
 o.order_id as order_key,
 s.store_id as store_key,
-d.date as date_key,
+d.date_key as date_key,
 c.customer_id as customer_key,
 e.employee_id as employee_key,
 p.product_id as product_key,
