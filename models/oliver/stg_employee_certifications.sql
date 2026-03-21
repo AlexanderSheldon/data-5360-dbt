@@ -11,4 +11,4 @@ select
     PARSE_JSON(certification_json):certification_name::varchar AS certification_name,
     PARSE_JSON(certification_json):certification_cost::float AS certification_cost,
     PARSE_JSON(certification_json):certification_awarded_date::date AS certification_awarded_date
-from {{ source('oliver_src', 'employee_certifications')}}
+from {{ source('oliver_landing', 'employee_certifications')}}

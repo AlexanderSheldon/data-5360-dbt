@@ -3,23 +3,11 @@
     schema = 'dw_oliver'
 )}}
 
-/*
-This fact will contain keys from the following dimensions:
-    dim_date
-    dim_employee
-This fact will contain the following metrics:
-    certification_name
-    certification_cost
-*/
-
-with employee_source as (
-    SELECT employee_id as employee_key,
-    employee_id,
-    email,
-    position,
-    hire_date,
-    last_name,
-    first_name,
-    phone_number
-    FROM {{ref('oliver_dim_employee')}}
-)
+SELECT {{ dbt_utils.generate_surrogate_key(['e.employee_key', 'd.date_key','c.certification_name']) }} as certification_key, 
+    e.employee_key,
+    d.date_key,
+    c.certification_name,
+    c.certification_cost
+FROM {{ref('stg_employee_certifications')}} c
+    JOIN {{ref('oliver_dim_date')}} d ON d.date = c.certification_awarded_date 
+    JOIN {{ref('oliver_dim_employee')}} e ON c.employee_id = e.employee_id
