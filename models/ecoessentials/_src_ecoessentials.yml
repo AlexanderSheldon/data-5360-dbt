@@ -1,0 +1,17 @@
+
+sources:
+  - name: eco_marketing_landing
+    database: alexsheldon
+    schema: ECO_DW_SOURCE
+    tables:
+      - name: marketingemails
+  
+  - name: eco_transactional_landing
+    database: alexsheldon
+    schema: ECO_SOURCE__ECOESSENTIALS_TRANSACTIONAL_DB
+    tables:
+      - name: customer
+      - name: order
+      - name: order_line
+      - name: product
+      - name: promotional_campaign
