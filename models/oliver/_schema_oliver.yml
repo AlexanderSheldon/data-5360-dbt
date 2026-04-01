@@ -1,6 +1,11 @@
 models:
 - name: oliver_dim_customer
   description: "Oliver Customer Dimension"
+  columns:
+      - name: CUSTOMER_KEY
+        description: "Unique identifier for each customer"
+        tests:
+          - unique
 - name: oliver_dim_date
   description: "Oliver Date Dimension"
 - name: oliver_dim_employee
@@ -9,8 +14,21 @@ models:
   description: "Oliver Product Dimension"
 - name: oliver_dim_store
   description: "Oliver Store Dimension"
+  columns:
+  - name: STATE
+    description: "Ensures states follow the captilization format, and exist in the US"
+    tests:
+    - accepted_values:
+        values: ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho","Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana","Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota","Mississippi", "Missouri", "Montana", "Nebraska", "Nevada","New Hampshire", "New Jersey", "New Mexico", "New York","North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon","Pennsylvania", "Rhode Island", "South Carolina", "South Dakota","Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington","West Virginia", "Wisconsin", "Wyoming"]
 - name: fact_sales
   description: "Oliver Sales Fact"
+  columns:
+    - name: CUSTOMER_KEY
+      description: "Checks that each value in CUSTOMER_KEY exists in the customer dimmension"
+      tests:
+        - relationships:
+            to: ref('oliver_dim_customer')
+            field: CUSTOMER_KEY
 - name: stg_employee_certifications
   description: |
     Staging model for employee certifications
@@ -19,4 +37,9 @@ models:
   description: |
     Employee Certification Fact
     The grain of this table is employee + certification + date
-    Each record represents a specific certification an employee earned on a specific date
+    Each record represents a specific certification an employee earned on a specific date 
+  columns:
+  - name: CERTIFICATION_KEY
+    description: "ensures CERTIFICATION_KEY is not null"
+    tests:
+    - not_null
