@@ -3,25 +3,137 @@ version: 2
 models:
   - name: eco_dim_campaign
     description: "Ecoessentials Campaign Dimension"
+    columns:  
+      - name: CAMPAIGN_NAME
+        description: "Unique identifier for each campaign"
+        tests:
+          - unique
   - name: eco_dim_customer
     description: "Ecoessentials Customer Dimension"
+    columns:  
+      - name: CUSTOMER_EMAILADDRESS
+        description: "Unique identifier for each Customer Email"
+        tests: 
+        - unique
   - name: eco_dim_date
     description: "Ecoessentials Date Dimension"
+    columns:  
+      - name: DATE
+        description: "Ensures no null dates"
+        tests:
+        - not_null
   - name: eco_dim_email
     description: "Ecoessentials Email Dimension"
+    columns:  
+      - name: EMAILNAME
+        description: "Ensures email names are unique"
+        tests:
+        - unique
   - name: eco_dim_event
     description: "Ecoessentials Email Event Dimension"
+    columns:  
+      - name: EVENTTYPE
+        description: "Only click sent and open should be accepted"
+        tests:
+        - accepted_values:
+            values:
+              - "CLICK"
+              - "OPEN"
+              - "SENT"
   - name: eco_dim_product
     description: "Ecoessentials Product Dimension"
+    columns:  
+      - name: PRODUCT_NAME
+        description: "Ensures product names are unique"
+        tests:
+        - unique
   - name: eco_dim_timestamp
     description: "Ecoessentials Timestamp Dimension"
+    columns:  
+      - name: EVENT_TIME
+        description: "Ensures timestamps are not null"
+        tests:
+        - not_null
   - name: fact_order_line
     description: |
       Order Line Fact.
       The grain of this table is price + quantity + price with discount + customer + date + campaign
       Each record represents a unique product and in an individual order.
+    columns:  
+      - name: PRODUCT_KEY
+        description: "Checks connection to product dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_product')
+              field: PRODUCT_KEY
+      - name: DATE_KEY
+        description: "Checks connection to date dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_date')
+              field: DATE_KEY
+      - name: CUSTOMER_KEY
+        description: "Checks connection to customer dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_customer')
+              field: CUSTOMER_KEY
+      - name: CAMPAIGN_KEY
+        description: "Checks connection to campaign dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_campaign')
+              field: CAMPAIGN_KEY
+
   - name: fact_marketing_email_conversion
     description: |
       Marketing Email Conversion Fact.
       The grain of this table is date + time + email + event + customer + campaign
       Each record represents a unique campaign email and its event type as completed by an customer.
+    columns: 
+      - name: EMAIL_KEY
+        description: "Checks connection to email dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_email')
+              field: EMAIL_KEY
+      - name: EMAILEVENT_KEY
+        description: "Checks connection to emailevent dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_emailevent')
+              field: EMAILEVENT_KEY
+      - name: TIMESTAMP_KEY
+        description: "Checks connection to timestamp dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_timestamp')
+              field: TIMESTAMP_KEY 
+      - name: DATE_KEY
+        description: "Checks connection to date dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_date')
+              field: DATE_KEY
+      - name: CAMPAIGN_KEY
+        description: "Checks connection to campaign dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_campaign')
+              field: CAMPAIGN_KEY
+      - name: CUSTOMER_KEY
+        description: "Checks connection to customer dimmension"
+        tests:
+        - relationships:
+            arguments:
+              to: ref('eco_dim_customer')
+              field: CUSTOMER_KEY
